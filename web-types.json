@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/web-types",
+  "framework": "vue",
+  "name": "nm_oa_web",
+  "version": "version written in package.json",
+  "contributions": {
+    "html": {
+      "js-types-syntax": "typescript",
+      "elements": [
+        {
+          "name": "vnode-render"
+        }
+      ]
+    }
+  }
+}
