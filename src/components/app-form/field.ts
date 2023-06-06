@@ -1,7 +1,8 @@
 import { h, VNodeChild } from 'vue';
 import { uuid } from '@/utils';
-import { ElCol, ElInput, ElRow, ElSlider } from 'element-plus';
+import { ElCol, ElInput, ElRow, ElSlider, ElColorPicker, ElRadioGroup, ElRadio } from 'element-plus';
 import SegmentedControl from '@/components/segmented-control.vue';
+import ImagePicker from '@/components/image-picker.vue';
 
 /**
  * 可以编辑的字段通过v-model绑定，变更时更新预览视图
@@ -60,8 +61,8 @@ abstract class LabeledField<ModelValue = unknown> implements Field {
       gutter: 10,
       align: 'middle',
     }, [
-      h(ElCol, { span: 8 }, this.getLabel),
-      h(ElCol, { span: 16 }, () => this.inputRender(props))
+      h(ElCol, { span: this.label ? 8 : 0 }, this.getLabel),
+      h(ElCol, { span: this.label ? 16 : 24 }, () => this.inputRender(props))
     ]);
   }
 
@@ -92,5 +93,31 @@ export class SegmentsField<ModelValue> extends LabeledField<ModelValue> {
       ...props,
       options: choices,
     }));
+  }
+}
+
+export class ColorField<ModelValue> extends LabeledField<ModelValue> {
+  constructor(label: VNodeChild) {
+    super(label, props => h(ElColorPicker, {
+      ...props,
+    }));
+  }
+}
+
+export class ImageField<ModelValue> extends LabeledField<ModelValue> {
+  constructor(label: VNodeChild) {
+    super(label, props => h(ImagePicker, {
+      ...props,
+    }));
+  }
+}
+
+export class RadioField extends LabeledField<number> {
+  constructor(label: VNodeChild, options: object[]) {
+    super(label, props => h(ElRadioGroup, {
+      ...props,
+    }, options.map(p => h(ElRadio, {
+      label: p.value,
+    }, h('p', p.label)))));
   }
 }

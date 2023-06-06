@@ -124,6 +124,7 @@ const isPreview = ctx.type === 'preview';
     border: 1px solid black;
     border-radius: 8px;
     background-color: white;
+    overflow-y: auto;
   }
 }
 
@@ -135,6 +136,7 @@ const isPreview = ctx.type === 'preview';
 
 .addable-widget {
   cursor: pointer;
+  margin: 10px 10px 0 0;
 }
 
 .preview-widget {
