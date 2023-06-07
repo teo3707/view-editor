@@ -105,9 +105,9 @@ export class ColorField<ModelValue> extends LabeledField<ModelValue> {
 }
 
 export class ImageField<ModelValue> extends LabeledField<ModelValue> {
-  constructor(label: VNodeChild) {
+  constructor(label: VNodeChild, options) {
     super(label, props => h(ImagePicker, {
-      ...props,
+      ...props, ...options
     }));
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="image-wrapper">
     <div class="image-picker" v-for="(p, k) in imgList" :key="k">
-      <el-image  class="image-box" fit="cover" :src="require('@/assets/image/banner-1.jpg')"></el-image>
+      <el-image  class="image-box" fit="cover" :src="p.imageSrc"></el-image>
       <div class="right-box">
         <el-input v-model="link" @change="handleInput($event, k)" placeholder="跳转链接，非必填" />
         <div class="button-box">
@@ -18,6 +18,7 @@
         </div>
       </div>
     </div>
+    <p v-if="widthLimit">建议上传{{widthLimit}}x{{heightLimit}}</p>
     <el-button type="primary" @click="handleAdd" plain>添加图片</el-button>
   </div>
 </template>
@@ -27,6 +28,11 @@ import {reactive, ref, watch} from 'vue';
 import { ElMessage} from "element-plus";
 // import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 // import FileImageRemoveOutline from 'vue-material-design-icons/FileImageRemoveOutline.vue'
+
+const props = defineProps<{
+  widthLimit?: number,
+  heightLimit?: number,
+}>()
 
 let modelValue = defineModel<ModelValue>();
 const link = ref('');
@@ -72,7 +78,7 @@ function handleDelete(k) {
     display: flex;
     flex-direction: row;
     height: 80px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 
     .image-box {
       width: 40%;
@@ -100,6 +106,12 @@ function handleDelete(k) {
       right: 0;
       top: 0;
     }
+  }
+
+  p {
+    color: var(--el-color-danger);
+    margin: 0 0 5px 0;
+    font-size: 14px;
   }
 }
 
