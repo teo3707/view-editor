@@ -3,6 +3,7 @@ import { uuid } from '@/utils';
 import { ElCol, ElInput, ElRow, ElSlider, ElColorPicker, ElRadioGroup, ElRadio } from 'element-plus';
 import SegmentedControl from '@/components/segmented-control.vue';
 import ImagePicker from '@/components/image-picker.vue';
+import TripleInput from '@/components/triple-input.vue'
 
 /**
  * 可以编辑的字段通过v-model绑定，变更时更新预览视图
@@ -61,17 +62,18 @@ abstract class LabeledField<ModelValue = unknown> implements Field {
       gutter: 10,
       align: 'middle',
     }, [
-      h(ElCol, { span: this.label ? 8 : 0 }, this.getLabel),
-      h(ElCol, { span: this.label ? 16 : 24 }, () => this.inputRender(props))
+      h(ElCol, { span: this.label ? 6 : 0 }, this.getLabel),
+      h(ElCol, { span: this.label ? 18 : 24 }, () => this.inputRender(props))
     ]);
   }
 
 }
 
 export class TextField extends LabeledField<string> {
-   constructor(label: VNodeChild) {
+   constructor(label: VNodeChild, defaultValue?: string) {
     super(label, props => h(ElInput, {
       ...props,
+      value: defaultValue || '',
       placeholder: typeof label === 'string' ? `请输入${label}` : '请输入'
     }));
   }
@@ -105,7 +107,7 @@ export class ColorField<ModelValue> extends LabeledField<ModelValue> {
 }
 
 export class ImageField<ModelValue> extends LabeledField<ModelValue> {
-  constructor(label: VNodeChild, options) {
+  constructor(label: VNodeChild, options?: any[]) {
     super(label, props => h(ImagePicker, {
       ...props, ...options
     }));
@@ -119,5 +121,13 @@ export class RadioField extends LabeledField<number> {
     }, options.map(p => h(ElRadio, {
       label: p.value,
     }, h('p', p.label)))));
+  }
+}
+
+export class TripleField<ModelValue> extends LabeledField<ModelValue> {
+  constructor(label: VNodeChild) {
+    super(label, props => h(TripleInput, {
+      ...props
+    }));
   }
 }

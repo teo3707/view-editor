@@ -12,11 +12,14 @@
 
     <div class="simulator-phone">
       <div class="simulator-phone-content">
-        <div v-for="widget in widgets" :key="widget.id"
-             @click="currentEditWidget = widget"
+        <div v-for="(widget, k) in widgets" :key="widget.id"
+             @click="handleSelect(widget, k)"
              class="preview-widget"
         >
-          <vnode-render :content="widget.render()"/>
+          <div :class="[k === currentIndex ? 'current-box' : '']">
+            <vnode-render :content="widget.render()"/>
+            <el-tag v-show="k === currentIndex" @click="handleRemove(k)" class="remove-box" type="info" effect="dark">删除</el-tag>
+          </div>
         </div>
       </div>
     </div>
@@ -32,6 +35,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ElMessageBox } from "element-plus";
 import { Context, RootWidget, Widget } from '@/types';
 import {
   defineComponent,
@@ -54,6 +58,7 @@ defineProps<{
 const ctx = inject<Context>(CONTEXT_SYMBOL);
 
 const currentEditWidget: Ref<Widget> = ref(null);
+const currentIndex = ref(0);
 
 watch(() => currentEditWidget.value?.fields.map(f => f.model), () => {
   instance.proxy.$forceUpdate();
@@ -65,7 +70,27 @@ const instance = getCurrentInstance();
 const addWidget = (widget: Widget) => {
   widgets.value.push(widget);
   currentEditWidget.value = widget;
+  currentIndex.value = widgets.value.length - 1;
   instance.proxy.$forceUpdate();
+}
+
+const handleSelect = (widget: Widget, index: number) => {
+  currentEditWidget.value = widget;
+  currentIndex.value = index;
+}
+
+const handleRemove = (index: number) => {
+  ElMessageBox.confirm('确定要删除该组件吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'}
+  ).then(() => {
+    currentEditWidget.value = widgets.value[index - 1];
+    currentIndex.value = index - 1;
+    widgets.value.splice(index, 1);
+    instance.proxy.$forceUpdate();
+  }).catch(() => {
+    // catch error
+  })
 }
 
 const isPreview = ctx.type === 'preview';
@@ -82,7 +107,8 @@ const isPreview = ctx.type === 'preview';
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr max-content 1fr;
+  //grid-template-columns: 1fr max-content 1fr;
+  grid-template-columns: 20% max-content 1fr;
 
   & > * {
     margin: 12px;
@@ -125,6 +151,17 @@ const isPreview = ctx.type === 'preview';
     border-radius: 8px;
     background-color: white;
     overflow-y: auto;
+
+    .current-box {
+      position: relative;
+      border: 2px dashed #00a0e9;
+
+      .remove-box {
+        position: absolute;
+        right: 2%;
+        bottom: 0;
+      }
+    }
   }
 }
 

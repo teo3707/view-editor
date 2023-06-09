@@ -81,7 +81,7 @@ function handleDelete(k) {
     margin-bottom: 5px;
 
     .image-box {
-      width: 40%;
+      width: 30%;
       margin-right: 10px;
     }
 
